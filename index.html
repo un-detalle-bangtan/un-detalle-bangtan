@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Detalle Especial ✨</title>
+    <style>
+        :root {
+            --bg-color: #090510;
+            --card-bg: rgba(22, 14, 38, 0.85);
+            --accent-purple: #c084fc;
+            --light-purple: #e9d5ff;
+            --neon-glow: rgba(192, 132, 252, 0.4);
+            --text-color: #f3f4f6;
+            --text-sub: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        /* ----- Fondo Dinámico ----- */
+        #dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+            transition: background-image 1.2s ease-in-out;
+            filter: brightness(0.4) contrast(1.1);
+        }
+
+        #dynamic-bg::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(9, 5, 16, 0.4) 0%, rgba(9, 5, 16, 0.85) 100%);
+        }
+
+        /* ----- Header Flotante ----- */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+        }
+
+        .app-header.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-purple);
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .music-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(22, 14, 38, 0.85);
+            border: 1px solid rgba(192, 132, 252, 0.3);
+            padding: 6px 14px;
+            border-radius: 25px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .music-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 70px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--accent-purple);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--accent-purple);
+        }
+
+        /* ----- Preloader ----- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #090510;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loader-symbol {
+            color: var(--accent-purple);
+            animation: pulseGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        .loader-text {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: var(--light-purple);
+            letter-spacing: 1px;
+            opacity: 0.8;
+            animation: fadeInOut 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(0.9); opacity: 0.5; filter: drop-shadow(0 0 5px rgba(192, 132, 252, 0.2)); }
+            100% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.8)); }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        /* ----- Partículas e Íconos ----- */
+        .bg-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-purple) 0%, transparent 70%);
+            opacity: 0.6;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.3); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        .bts-floating-icon {
+            position: absolute;
+            color: var(--accent-purple);
+            opacity: 0.25;
+            animation: floatIcon 6s ease-in-out infinite alternate;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes floatIcon {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-20px) rotate(15deg); }
+        }
+
+        /* ----- Modal Inicial ----- */
+        #interactive-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle, #1a0f30 0%, #090510 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .modal-card {
+            position: relative;
+            z-index: 2;
+            background: var(--card-bg);
+            border: 1px solid rgba(192, 132, 252, 0.4);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            backdrop-filter: blur(15px);
+            animation: neonPulse 4s infinite alternate;
+            transition: transform 0.4s ease;
+        }
+
+        @keyframes neonPulse {
+            0% { box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.2); border-color: rgba(192, 132, 252, 0.3); }
+            100% { box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 35px rgba(192, 132, 252, 0.6); border-color: rgba(192, 132, 252, 0.7); }
+        }
+
+        .modal-img-container {
+            width: 100%;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(9, 5, 16, 0.5);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .modal-card img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 12px;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-card h2 {
+            font-size: 1.4rem;
+            color: var(--accent-purple);
+            margin-bottom: 10px;
+        }
+
+        .modal-card p {
+            font-size: 1rem;
+            color: var(--text-sub);
+            margin-bottom: 25px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #c084fc, #7e22ce);
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-sub);
+            box-shadow: none;
+        }
+
+        /* ----- Contenido Snap Scroll ----- */
+        .content {
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            width: 100%;
+            transition: opacity 1s ease;
+        }
+
+        .block-wrapper {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            scroll-snap-align: start;
+            perspective: 1200px;
+        }
+
+        .block-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(192, 132, 252, 0.25);
+            border-radius: 24px;
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 30px rgba(168, 85, 247, 0.15);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            transform: translateY(100px) rotateX(-25deg) scale(0.9);
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .block-wrapper.visible .block-card {
+            opacity: 1;
+            transform: translateY(0) rotateX(0deg) scale(1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 35px var(--neon-glow);
+        }
+
+        .block-card h1 {
+            font-size: 1.8rem;
+            color: var(--accent-purple);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
+        }
+
+        .block-card h2 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .block-card p {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: var(--accent-purple);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .scroll-hint {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fondo Dinámico Cambiante -->
+    <div id="dynamic-bg"></div>
+
+    <!-- Header Flotante -->
+    <header class="app-header" id="app-header">
+        <div class="header-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4.5 3L11 4.5V20.5L4.5 19V3ZM13 4.5L19.5 3V19L13 20.5V4.5Z"/>
+            </svg>
+            BANGTAN
+        </div>
+        
+        <div class="music-controls">
+            <button class="music-toggle" id="music-btn" onclick="toggleMusic()" title="Pausar / Reproducir">
+                <span id="music-icon">🎵</span>
+            </button>
+            <input type="range" class="volume-slider" id="volume-range" min="0" max="1" step="0.05" value="0.7" oninput="changeVolume(this.value)" title="Volumen">
+        </div>
+    </header>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-symbol">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4.5 3L11 4.5V20.5L4.5 19V3ZM13 4.5L19.5 3V19L13 20.5V4.5Z"/>
+            </svg>
+        </div>
+        <div class="loader-text">Preparando una sorpresa especial...</div>
+    </div>
+
+    <!-- Audio de Fondo -->
+    <audio id="bts-music" loop preload="auto">
+        <source src="bts-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Modal Inicial -->
+    <div id="interactive-screen">
+        <div class="bg-particles" id="particles-container"></div>
+
+        <div class="bts-floating-icon" style="top: 15%; left: 10%;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 3L11 4.5V20.5L4.5 19V3ZM13 4.5L19.5 3V19L13 20.5V4.5Z"/></svg>
+        </div>
+        <div class="bts-floating-icon" style="top: 70%; left: 15%;">✨</div>
+        <div class="bts-floating-icon" style="top: 25%; right: 12%;">✨</div>
+        <div class="bts-floating-icon" style="top: 75%; right: 10%;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 3L11 4.5V20.5L4.5 19V3ZM13 4.5L19.5 3V19L13 20.5V4.5Z"/></svg>
+        </div>
+
+        <div class="modal-card" id="modal-card-box">
+            <div class="modal-img-container">
+                <img id="modal-img" src="principal.gif" alt="BTS OT7">
+            </div>
+            <h2 id="modal-title">Saludo/bienvenida</h2>
+            <p id="modal-text">¿Estas lista para la sorpresa?</p>
+            
+            <div class="btn-container" id="btn-group">
+                <button class="btn" onclick="startExperience()">
+                    ¡SÍ, ESTOY LISTA! 💜
+                </button>
+                <button class="btn btn-secondary" onclick="showJungkook()">TODAVÍA NO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Snap Scroll -->
+    <div class="content" id="main-content">
+        
+        <!-- Bloque 1 -->
+        <div class="block-wrapper" data-bg="bloque1.jpg">
+            <div class="block-card">
+                <h1>Para.... ✨</h1>
+                <p>...</p>
+                <p>...</p>
+                <div class="scroll-hint">Deslizá hacia abajo 🠗</div>
+            </div>
+        </div>
+
+        <!-- Bloque 2 -->
+        <div class="block-wrapper" data-bg="bloque2.gif">
+            <div class="block-card">
+                <h2>ESTE TATUAJE VA POR MI CUENTA 🎁</h2>
+                <p class="highlight">Tu diseño. Tu frase. Tu decisión.</p>
+                <br>
+                <p>Con Valentina ya dejamos todo coordinado para que vos solo te preocupes por disfrutar de la sesión.</p>
+                <div class="scroll-hint">Deslizá hacia abajo 🠗</div>
+            </div>
+        </div>
+
+        <!-- Bloque 3 -->
+        <div class="block-wrapper" data-bg="bloque3.gif">
+            <div class="block-card">
+                <p>...</p>
+                <br>
+                <p class="highlight">.... 💜</p>
+                <div class="scroll-hint">Deslizá hacia abajo 🠗</div>
+            </div>
+        </div>
+
+        <!-- Bloque 4 -->
+        <div class="block-wrapper" data-bg="bloque4.gif">
+            <div class="block-card">
+                <h2>¡Disfrutá mucho tu nuevo tatuaje! 🎉</h2>
+                <p>...</p>
+                <br>
+                <p style="font-size: 0.9rem; opacity: 0.6;">Cierre</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Desactivar restauración automática de scroll del navegador
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
+        const audio = document.getElementById('bts-music');
+        const dynamicBg = document.getElementById('dynamic-bg');
+        let isPlaying = false;
+
+        window.addEventListener('load', () => {
+            // Asegurar que la página cargue en la cima (Bloque 1)
+            window.scrollTo(0, 0);
+
+            createParticles();
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+
+                const interactiveScreen = document.getElementById('interactive-screen');
+                interactiveScreen.style.visibility = 'visible';
+                interactiveScreen.style.opacity = '1';
+            }, 3500);
+        });
+
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 18; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 8 + 4;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDuration = `${Math.random() * 6 + 4}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(particle);
+            }
+        }
+
+        function startExperience() {
+            // Forzar volver arriba antes de abrir los bloques
+            window.scrollTo(0, 0);
+
+            audio.volume = 0.7;
+            
+            audio.play().then(() => {
+                isPlaying = true;
+            }).catch(e => console.log("Audio play blocked", e));
+
+            document.getElementById('interactive-screen').style.opacity = '0';
+            document.getElementById('interactive-screen').style.visibility = 'hidden';
+
+            document.getElementById('main-content').style.opacity = '1';
+            document.getElementById('app-header').classList.add('visible');
+
+            const firstBlock = document.querySelector('.block-wrapper');
+            if (firstBlock && firstBlock.dataset.bg) {
+                dynamicBg.style.backgroundImage = `url('${firstBlock.dataset.bg}')`;
+            }
+
+            init3DObserver();
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                document.getElementById('music-icon').innerText = '🔇';
+                isPlaying = false;
+            } else {
+                audio.play();
+                document.getElementById('music-icon').innerText = '🎵';
+                isPlaying = true;
+            }
+        }
+
+        function changeVolume(val) {
+            audio.volume = val;
+            if (val == 0) {
+                document.getElementById('music-icon').innerText = '🔇';
+            } else if (!isPlaying) {
+                audio.play();
+                document.getElementById('music-icon').innerText = '🎵';
+                isPlaying = true;
+            } else {
+                document.getElementById('music-icon').innerText = '🎵';
+            }
+        }
+
+        function showJungkook() {
+            const imgElement = document.getElementById('modal-img');
+
+            imgElement.style.opacity = '0';
+
+            setTimeout(() => {
+                imgElement.src = 'no.jpg';
+                imgElement.style.opacity = '1';
+
+                document.getElementById('modal-title').innerText = 'Tranqui, Jungkook dice que no hay apuro... 💜';
+                document.getElementById('modal-text').innerText = 'Tomate tu tiempo. Cuando sientas que estás lista, acá voy a estar.';
+                
+                document.getElementById('btn-group').innerHTML = `
+                    <button class="btn" style="width: 100%" onclick="startExperience()">
+                        ¡AHORA SÍ, ESTOY LISTA! 💜
+                    </button>
+                `;
+            }, 200);
+        }
+
+        function init3DObserver() {
+            const wrappers = document.querySelectorAll('.block-wrapper');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        const bgUrl = entry.target.dataset.bg;
+                        if (bgUrl) {
+                            dynamicBg.style.backgroundImage = `url('${bgUrl}')`;
+                        }
+                    }
+                });
+            }, { threshold: 0.6 });
+
+            wrappers.forEach(wrapper => observer.observe(wrapper));
+        }
+    </script>
+</body>
+</html>
