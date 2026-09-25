@@ -33,7 +33,7 @@
             overflow-x: hidden;
         }
 
-        /* ----- Fondo Dinámico ----- */
+        /* ----- Fondo Dinámico Optimizado para Celular ----- */
         #dynamic-bg {
             position: fixed;
             top: 0;
@@ -45,7 +45,7 @@
             background-repeat: no-repeat;
             z-index: 0;
             transition: background-image 1.2s ease-in-out;
-            filter: brightness(0.4) contrast(1.1);
+            filter: brightness(0.45) contrast(1.1);
         }
 
         #dynamic-bg::after {
@@ -55,7 +55,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(9, 5, 16, 0.4) 0%, rgba(9, 5, 16, 0.85) 100%);
+            background: radial-gradient(circle at 50% 50%, rgba(9, 5, 16, 0.3) 0%, rgba(9, 5, 16, 0.9) 100%);
+        }
+
+        /* Ajuste específico para celulares en vertical */
+        @media (max-width: 768px) {
+            #dynamic-bg {
+                background-size: contain; /* Garantiza que la foto/GIF no se corte a los lados */
+                background-color: #090510;
+            }
         }
 
         /* ----- Header Flotante ----- */
@@ -190,7 +198,7 @@
             100% { opacity: 1; }
         }
 
-        /* ----- Partículas e Íconos ----- */
+        /* ----- Partículas e Íconos Flotantes Reubicados ----- */
         .bg-particles {
             position: absolute;
             top: 0;
@@ -219,15 +227,17 @@
         .bts-floating-icon {
             position: absolute;
             color: var(--accent-purple);
-            opacity: 0.25;
-            animation: floatIcon 6s ease-in-out infinite alternate;
-            z-index: 1;
+            opacity: 0.6;
+            font-size: 1.6rem;
+            animation: floatIcon 5s ease-in-out infinite alternate;
+            z-index: 3;
             pointer-events: none;
+            filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.6));
         }
 
         @keyframes floatIcon {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-20px) rotate(15deg); }
+            0% { transform: translateY(0px) rotate(0deg) scale(0.9); }
+            100% { transform: translateY(-18px) rotate(15deg) scale(1.1); }
         }
 
         /* ----- Modal Inicial ----- */
@@ -462,13 +472,14 @@
     <div id="interactive-screen">
         <div class="bg-particles" id="particles-container"></div>
 
-        <div class="bts-floating-icon" style="top: 15%; left: 10%;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 3L11 4.5V20.5L4.5 19V3ZM13 4.5L19.5 3V19L13 20.5V4.5Z"/></svg>
+        <!-- Posiciones optimizadas para no quedar escondidas tras el modal en celulares -->
+        <div class="bts-floating-icon" style="top: 8%; left: 6%;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 3L11 4.5V20.5L4.5 19V3ZM13 4.5L19.5 3V19L13 20.5V4.5Z"/></svg>
         </div>
-        <div class="bts-floating-icon" style="top: 70%; left: 15%;">✨</div>
-        <div class="bts-floating-icon" style="top: 25%; right: 12%;">✨</div>
-        <div class="bts-floating-icon" style="top: 75%; right: 10%;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 3L11 4.5V20.5L4.5 19V3ZM13 4.5L19.5 3V19L13 20.5V4.5Z"/></svg>
+        <div class="bts-floating-icon" style="top: 88%; left: 8%;">✨</div>
+        <div class="bts-floating-icon" style="top: 10%; right: 6%;">✨</div>
+        <div class="bts-floating-icon" style="top: 86%; right: 8%;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M4.5 3L11 4.5V20.5L4.5 19V3ZM13 4.5L19.5 3V19L13 20.5V4.5Z"/></svg>
         </div>
 
         <div class="modal-card" id="modal-card-box">
@@ -534,7 +545,6 @@
     </div>
 
     <script>
-        // Desactivar restauración automática de scroll del navegador
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
@@ -544,7 +554,6 @@
         let isPlaying = false;
 
         window.addEventListener('load', () => {
-            // Asegurar que la página cargue en la cima (Bloque 1)
             window.scrollTo(0, 0);
 
             createParticles();
@@ -575,7 +584,6 @@
         }
 
         function startExperience() {
-            // Forzar volver arriba antes de abrir los bloques
             window.scrollTo(0, 0);
 
             audio.volume = 0.7;
@@ -601,6 +609,7 @@
         function toggleMusic() {
             if (isPlaying) {
                 audio.pause();
+                document.getElementById('music-icon').innerText = '0x1F507';
                 document.getElementById('music-icon').innerText = '🔇';
                 isPlaying = false;
             } else {
