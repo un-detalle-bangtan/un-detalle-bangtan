@@ -58,11 +58,10 @@
             background: radial-gradient(circle at 50% 50%, rgba(9, 5, 16, 0.1) 0%, rgba(9, 5, 16, 0.6) 100%);
         }
 
-        /* En mobile: la imagen/GIF se adapta completa centrada arriba */
         @media (max-width: 768px) {
             #dynamic-bg {
                 background-size: contain;
-                background-position: center 25%; /* Eleva la imagen para dejar espacio al mensaje abajo */
+                background-position: center 25%;
                 background-color: #090510;
             }
         }
@@ -370,7 +369,6 @@
             perspective: 1200px;
         }
 
-        /* En celular alineamos la tarjeta abajo para dejar ver la imagen libre arriba */
         @media (max-width: 768px) {
             .block-wrapper {
                 align-items: flex-end;
@@ -498,8 +496,8 @@
             <div class="modal-img-container">
                 <img id="modal-img" src="principal.gif" alt="BTS OT7">
             </div>
-            <h2 id="modal-title">Saludo/bienvenida</h2>
-            <p id="modal-text">¿Estas lista para la sorpresa?</p>
+            <h2 id="modal-title">¡Hola Leo! ✨</h2>
+            <p id="modal-text">Antes de seguir... ¿estás lista para tu sorpresa?</p>
             
             <div class="btn-container" id="btn-group">
                 <button class="btn" onclick="startExperience()">
@@ -516,9 +514,8 @@
         <!-- Bloque 1 -->
         <div class="block-wrapper" data-bg="bloque1.jpg">
             <div class="block-card">
-                <h1>Para.... ✨</h1>
-                <p>...</p>
-                <p>...</p>
+                <h1>Hola Leo! ✨</h1>
+                <p>Sé que tu cumple es en unos días, pero como me enteré de que te ibas a tatuar hoy, tuve que adelantar la sorpresa...</p>
                 <div class="scroll-hint">Deslizá hacia abajo 🠗</div>
             </div>
         </div>
@@ -526,10 +523,10 @@
         <!-- Bloque 2 -->
         <div class="block-wrapper" data-bg="bloque2.gif">
             <div class="block-card">
-                <h2>ESTE TATUAJE VA POR MI CUENTA 🎁</h2>
-                <p class="highlight">Tu diseño. Tu frase. Tu decisión.</p>
+                <p>¿Te acordás cuando te pregunté si te tatuarías algo?</p>
+                <p>Bueno, desde ese momento surgió la idea de hacerte una linda sorpresa.</p>
                 <br>
-                <p>Con Valentina ya dejamos todo coordinado para que vos solo te preocupes por disfrutar de la sesión.</p>
+                <p class="highlight">Así que hoy me toca a mí cumplir ese deseo ✨</p>
                 <div class="scroll-hint">Deslizá hacia abajo 🠗</div>
             </div>
         </div>
@@ -537,9 +534,10 @@
         <!-- Bloque 3 -->
         <div class="block-wrapper" data-bg="bloque3.gif">
             <div class="block-card">
-                <p>...</p>
+                <h2>ESTE TATUAJE VA POR MI CUENTA 🎁</h2>
+                <p class="highlight">Tu diseño, tu idea, tu decisión.</p>
                 <br>
-                <p class="highlight">.... 💜</p>
+                <p>Con Valen ya dejamos todo coordinado antes de que vinieras, así que no te preocupes por nada 💜</p>
                 <div class="scroll-hint">Deslizá hacia abajo 🠗</div>
             </div>
         </div>
@@ -547,10 +545,13 @@
         <!-- Bloque 4 -->
         <div class="block-wrapper" data-bg="bloque4.gif">
             <div class="block-card">
-                <h2>¡Disfrutá mucho tu nuevo tatuaje! 🎉</h2>
-                <p>...</p>
+                <h2>Solamente quiero que lo disfrutes 🎉</h2>
+                <p>Nos vemos en unos días por Buenos Aires para festejar tu cumple 🥂</p>
                 <br>
-                <p style="font-size: 0.9rem; opacity: 0.6;">Cierre</p>
+                <p class="highlight">Te quiero mucho 💜</p>
+                <p style="font-weight: bold; margin-top: 5px;">Javi</p>
+                <br>
+                <p style="font-size: 0.8rem; opacity: 0.5; margin-top: 10px;">Domingo, 27 de Septiembre de 2026</p>
             </div>
         </div>
 
